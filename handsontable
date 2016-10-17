@@ -1,0 +1,102 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="handsontable.full.min.css">
+<link rel="stylesheet" type="text/css" href="main.css">
+<script src="handsontable.full.min.js"></script>
+<link rel="stylesheet" href="smartMenu.css" type="text/css" />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jquery-smartMenu.js"></script>
+<style>
+table{
+    border: 1px solid green;
+}
+table td,th{
+    border: 1px solid green;
+}
+</style>
+</head>
+<body>
+<table id="base_table">
+    <thead>
+	    <th>x/y</th>
+		<th><a href="#">围城</a></th>
+		<th><a href="#">老人与海</a></th>
+		<th><a href="#">金瓶梅</a>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td><a href="#">张三</a></td>
+		<td><a href="#">2</a></td>
+		<td><a href="#">3</a></td>
+		<td><a href="#">1</a></td>
+	  </tr>
+	  <tr>
+	    <td><a href="#">李四</a></td>
+		<td><a href="#">2</a></td>
+		<td><a href="#">3</a></td>
+		<td><a href="#">3</a></td>
+	  </tr>
+	  <tr>
+	    <td><a href="#">王五</a></td>
+		<td><a href="#">4</a></td>
+		<td><a href="#">0</a></td>
+		<td><a href="#">0</a></td>
+	  </tr>
+	</tbody>
+</table>
+<div id="hot"></div>
+<script>
+  	var colArray = new Array();
+  	var dataObject = new Array();
+  	var colsArray = new Array();
+  	$(function(){
+    	$('#base_table thead th').each(function(index){
+          	colArray.push($(this).html());
+	      	var obj = new Object();
+	    	obj['data'] = 'col_'+index;
+	    	obj['renderer'] = 'html';
+	    	colsArray.push(obj);
+	    if(index>0){
+	        var dom = '<input name="columns" type="checkbox" checked="checked" value="'+$(this).find('a').html()+'" />'+$(this).find('a').html();
+	    }
+	    $('#columns').append(dom);
+	});
+	$('#base_table tbody tr').each(function(index){
+	  var dom = '<input name="rows" type="checkbox" checked="checked" value="'+$(this).eq(0).find('a').html()+'" />'+ $(this).eq(0).find('a').html();
+	  var dog = new Object();
+	  $(this).find('td').each(function(index){
+		dog['col_'+index] = $(this).html();
+      });
+	  dataObject.push(dog);
+	  $('#rows').append(dom);
+	});
+
+    var hotElement = document.querySelector('#hot');
+    var hotElementContainer = hotElement.parentNode;
+    var hotSettings = {
+      data: '',
+      columns: '',
+      stretchH: 'all',
+      width: 1366,
+      autoWrapRow: true,
+      maxRows: 22,
+      rowHeaders: true,
+	  colHeaders: '',
+      manualRowMove: true,
+      manualColumnMove: true
+    };
+    hotSettings.colHeaders = colArray ;
+	hotSettings.data = dataObject;
+	hotSettings.columns = colsArray ;
+    var hot = new Handsontable(hotElement, hotSettings);
+  });
+  
+</script>
+    <div id="columns"></div>
+    <div id="rows"></div>
+</body>
+</html>
+
