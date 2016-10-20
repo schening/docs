@@ -1,0 +1,35 @@
+1、下载mysql的repo源
+    $ wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+       如果提示 -bash:wget command not found,则wget没有安装,可以通过yum命令或者下载rpm包进行安装。安装命令如下
+       $ yum install wget –y
+2、安装mysql-community-release-el7-5.noarch.rpm包
+    $ sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm
+    安装完成之后会出现两个mysql的yum repo源
+    /etc/yum.repos.d/mysql-community.repo
+    /etc/yum.repos.d/mysql-community-source.repo
+3、安装mysql
+    $ sudo yum install mysql-server –y
+4、重置密码
+    重置密码前需要先登录
+    $ mysql –u root
+    登录可能报错，ERROR 2002 (HY000): Can‘t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock‘，
+    原因是/var/lib/mysql的访问权限问题。下面的命令把/var/lib/mysql的拥有者改为当前用户：
+    $ sudo chown -R mysql:mysql /var/lib/mysql #这里的mysql是用户名（需要设置用户组合用户）
+    然后重启服务：
+    $ service mysqld restart
+    $ mysql-u root
+    mysql> use mysql;
+    mysql> update user set password=password(‘newpassword’) where user = ‘root’;
+    mysql> exit;
+5、开放3306端口（如不需要远程访问可以不用开启）
+    $ vim /etc/sysconfig/iptables 
+    添加-A INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT 
+    重启iptables服务
+    $ service iptables restart
+6、修改权限允许远程登录
+    $ mysql –u –root –p
+    password: 输入mysql密码
+    mysql> grant all privileges on *.* to 'root'@'%' with grant option  //允许远程访问
+    mysql> flush privileges; //修改生效
+    mysql> exit;
+    mysql安装完成。  
